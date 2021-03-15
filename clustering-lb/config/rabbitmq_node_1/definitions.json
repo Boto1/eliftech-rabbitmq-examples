@@ -1,0 +1,15 @@
+{
+	"policies": [
+		{
+			"vhost": "/",
+			"pattern": ".*",
+			"name": "ha-policy",
+			"apply-to": "queues",
+			"definition": {
+				"ha-mode": "exactly",
+				"ha-params": 2,
+				"ha-sync-mode": "automatic"
+			}
+		}
+	]
+}

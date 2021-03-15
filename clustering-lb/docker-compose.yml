@@ -1,0 +1,54 @@
+version: "3"
+
+services:
+
+  node1:
+    container_name: rabbitmq_node1
+    hostname: node1
+    image: rabbitmq:3.8.6-management
+    networks: 
+      - eliftech-cluster-net
+    volumes: 
+      - ./config/rabbitmq_node_1:/config/
+    env_file: rabbitmq.env
+
+  node2:
+    container_name: rabbitmq_node2
+    hostname: node2
+    links:
+      - node1
+    image: rabbitmq:3.8.6-management
+    networks: 
+      - eliftech-cluster-net
+    volumes: 
+      - ./config/rabbitmq_node_2:/config/
+    env_file: rabbitmq.env
+
+  node3:
+    container_name: rabbitmq_node3
+    hostname: node3
+    links:
+      - node1
+    image: rabbitmq:3.8.6-management
+    networks: 
+      - eliftech-cluster-net
+    volumes: 
+      - ./config/rabbitmq_node_3:/config/
+    env_file: rabbitmq.env
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks: 
+      - eliftech-cluster-net
+    depends_on: 
+      - node1
+      - node2
+      - node3
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+
+networks:
+  eliftech-cluster-net:
